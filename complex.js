@@ -456,6 +456,18 @@
         return Complex['ONE'];
       }
 
+      if (!z.isFinite()) {
+        return Complex['NAN'];
+      }
+
+      if (!this.isFinite()) {
+        return z['re'] < 0
+          ? Complex['ZERO']
+          : z['im'] === 0 && z['re'] > 0 // should we epsilon ball here
+            ? Complex['INFINITY']
+            : Complex['NAN'];
+      }
+
       // If the exponent is real
       if (z['im'] === 0) {
 
@@ -553,9 +565,10 @@
 
       var tmp = Math.exp(this['re']);
 
-      if (this['im'] === 0) {
-        //return new Complex(tmp, 0);
+      if (!this.isFinite()) {
+        return Complex['NAN'];
       }
+
       return new Complex(
               tmp * Math.cos(this['im']),
               tmp * Math.sin(this['im']));
